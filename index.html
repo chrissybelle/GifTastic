@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>GifTastic!</title>
+    <style type="text/css">
+    button {
+        font-size: 20px;
+        background-color: #999;
+        border: 1px solid #000;
+        border-radius: 5px;
+        margin: 5px;
+    }
+    </style>
+</head>
+<body>
+    <div class="buttons">
+        <!-- buttons go here -->
+    </div>
+    <div class="addBtn">
+        <h4>Add an animal:</h4>
+        <input type="text" id="newAnimal" placeholder="Type Here">
+        <input id="addAnimal" type="submit" value ="Add New Animal">
+        </div>
+    <div class="gifs">
+        <!-- gifs go here -->
+    </div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var topics = ["panda", "owl", "pufferfish"];
+
+
+    for (var i = 0; i < topics.length; i++) {
+        var btn = $("<button>");
+        btn.attr("data-name", topics[i]);
+        btn.text(topics[i]);
+        $(".buttons").append(btn);
+    }
+
+    $("#addAnimal").on("click", function() {
+        var btn2 = $("<button>");
+        var newAnimal = $("#newAnimal").val();
+        btn2.attr("data-name", newAnimal);
+        btn2.text(newAnimal);
+        $(".buttons").append(btn2);
+    });
+
+
+
+</script>
+
+</body>
+</html>
