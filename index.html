@@ -6,13 +6,38 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GifTastic!</title>
     <style type="text/css">
-    button {
-        font-size: 20px;
-        background-color: #999;
-        border: 1px solid #000;
-        border-radius: 5px;
-        margin: 5px;
-    }
+        body {
+            font-family: arial;           
+        }
+        button {
+            margin: 5px;
+            color: #fff;
+            background-color: #bc0505f6;
+            border-radius: 5px;
+        }
+        button:hover {
+            color: #000;
+            background-color: pink;
+        }
+        .gifs {
+            width: 1000px;
+        }
+        .imageDiv {
+            display: inline-block;
+            margin: 5px;
+        }
+        img:hover {
+            opacity: 0.5;
+        }
+        .addBtn {
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid #000;
+            width: 200px;
+        }
+        h4 {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -20,9 +45,9 @@
         <!-- buttons go here -->
     </div>
     <div class="addBtn">
-        <h4>Add an animal:</h4>
-        <input type="text" id="newAnimal" placeholder="Type Here">
-        <input id="addAnimal" type="submit" value ="Add New Animal">
+        <h4>See more GIF's:</h4>
+        <input type="text" id="newBtn" placeholder="Type Here">
+        <input id="addBtn" type="submit" value ="Search">
         </div>
     <div class="gifs">
         <!-- gifs go here -->
@@ -33,25 +58,91 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript">
 
-    var topics = ["panda", "owl", "pufferfish"];
+$(document).ready(function() {
 
+//V A R I A B L E S
+//array for initial buttons
+var gifArray = ["finger wag", "salt bae", "michael scott", "finger guns", "time lapse", "wow", "zoolander"];
 
-    for (var i = 0; i < topics.length; i++) {
+//creates buttons
+function createButtons() {
+    $(".buttons").empty();
+    for (var i = 0; i < gifArray.length; i++) {
         var btn = $("<button>");
-        btn.attr("data-name", topics[i]);
-        btn.text(topics[i]);
+        btn.attr("data-name", gifArray[i]);
+        btn.text(gifArray[i]);
+        btn.addClass("gifBtn");
         $(".buttons").append(btn);
     }
+}
+//calls the createButtons function to display buttons on screen
+createButtons();
 
-    $("#addAnimal").on("click", function() {
-        var btn2 = $("<button>");
-        var newAnimal = $("#newAnimal").val();
-        btn2.attr("data-name", newAnimal);
-        btn2.text(newAnimal);
-        $(".buttons").append(btn2);
-    });
+//when user inputs new giphyQuery, new giphyQuery is pushed to the gifArray array
+$("#addBtn").on("click", function() {
+    // event.preventDefault();
+    var newBtn = $("#newBtn").val().trim();
+    if (newBtn !== "") {
+        gifArray.push(newBtn);
+        console.log(gifArray);
+        createButtons();
+        $("#newBtn").val("");
+    }
+}); 
 
 
+//on click button, populate browser with 10 still images
+$(".buttons").on("click", ".gifBtn", function() {
+    $(".gifs").empty();
+    var giphyQuery = $(this).attr("data-name");
+    console.log(giphyQuery);
+    var api = "JrN4Gsd1Q9zZ8I8db1XH7AIlwMczfLVb";
+    var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=" + api + "&q=" + giphyQuery + "&limit=10&offset=0&lang=en";
+
+
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    }).then(function(response) {
+        console.log(queryURL)
+        console.log(response);
+        var results = response.data;
+
+        for (var j = 0; j < results.length; j++) {
+            var imageDiv = $("<div>");
+            var rating = $("<h5>").text("Rating: " + results[j].rating);
+            var image = $("<img>");
+            image.attr("src", results[j].images.fixed_height_still.url);
+            image.attr("data-animate", results[j].images.fixed_height.url);
+            image.attr("data-static", results[j].images.fixed_height_still.url);
+            image.attr("data-status", "still");
+            image.addClass("gifImages");
+            imageDiv.append(rating);
+            imageDiv.append(image);
+            imageDiv.addClass("imageDiv");
+            $(".gifs").prepend(imageDiv);
+        }
+
+    }); 
+
+});
+
+
+//on click image, toggle its state between animate and still
+$(".gifs").on("click", ".gifImages", function() {
+    var state = $(this).attr("data-status");
+    if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-status", "animate");
+    } else if (state !== "still") {
+        $(this).attr("src", $(this).attr("data-static"));
+        $(this).attr("data-status", "still");
+    }
+});
+
+
+
+});
 
 </script>
 
